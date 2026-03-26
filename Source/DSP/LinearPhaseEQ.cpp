@@ -23,13 +23,13 @@ void LinearPhaseEQ::rebuildKernel()
     juce::dsp::FFT fft(fftOrder);
     std::vector<float> fftData(fftSize * 2, 0.f);
 
-    // Copy kernel into FFT buffer (real part only)
+    // Copy kernel into first half of FFT buffer (real samples)
     for (int i = 0; i < fftSize; ++i)
-        fftData[i * 2] = kernel[i];
+        fftData[(size_t)i] = kernel[(size_t)i];
 
     fft.performRealOnlyForwardTransform(fftData.data());
 
-    // Shape magnitude response
+    // Shape magnitude response (output is interleaved complex: real, imag pairs)
     for (int i = 0; i <= fftSize / 2; ++i)
     {
         float freq = (float)i * (float)sr / (float)fftSize;
@@ -49,16 +49,16 @@ void LinearPhaseEQ::rebuildKernel()
             gainDB += highGain;
 
         float gain = juce::Decibels::decibelsToGain(gainDB);
-        fftData[i * 2]     *= gain;
-        fftData[i * 2 + 1] *= gain;
+        fftData[(size_t)(i * 2)]     *= gain;
+        fftData[(size_t)(i * 2 + 1)] *= gain;
     }
 
     fft.performRealOnlyInverseTransform(fftData.data());
 
-    // Extract real part as kernel
+    // Inverse transform outputs real samples in first half of buffer
     juce::AudioBuffer<float> irBuffer(1, fftSize);
     for (int i = 0; i < fftSize; ++i)
-        irBuffer.setSample(0, i, fftData[i * 2]);
+        irBuffer.setSample(0, i, fftData[(size_t)i]);
 
     convolution.loadImpulseResponse(std::move(irBuffer), sr, juce::dsp::Convolution::Stereo::yes, juce::dsp::Convolution::Trim::no, juce::dsp::Convolution::Normalise::no);
 }
