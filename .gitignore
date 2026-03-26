@@ -1,0 +1,22 @@
+# Build
+build-macos/
+build-windows/
+build/
+cmake-build-*/
+
+# IDE
+.idea/
+.vscode/
+*.xcodeproj
+*.xcworkspace
+xcuserdata/
+*.sln
+*.vcxproj*
+.vs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# JUCE fetch cache
+_deps/
