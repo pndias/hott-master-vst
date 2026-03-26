@@ -6,13 +6,19 @@ echo "=== HOTT MASTER VST3 — macOS Build ==="
 
 # Check dependencies
 command -v cmake >/dev/null 2>&1 || { echo "CMake not found. Install: brew install cmake"; exit 1; }
-command -v xcodebuild >/dev/null 2>&1 || { echo "Xcode CLI tools not found. Install: xcode-select --install"; exit 1; }
 
 BUILD_DIR="build-macos"
 mkdir -p "$BUILD_DIR"
 
 echo "[1/3] Configuring CMake..."
-cmake -B "$BUILD_DIR" -G "Xcode" -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
+# Try Xcode generator first (supports Universal Binary), fall back to Unix Makefiles
+if command -v xcodebuild >/dev/null 2>&1 && cmake -B "$BUILD_DIR" -G "Xcode" -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" 2>/dev/null; then
+    echo "       Using Xcode generator (Universal Binary)"
+else
+    echo "       Xcode generator unavailable, using Unix Makefiles"
+    rm -rf "$BUILD_DIR"
+    cmake -B "$BUILD_DIR" -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
+fi
 
 echo "[2/3] Building Release..."
 cmake --build "$BUILD_DIR" --config Release --parallel

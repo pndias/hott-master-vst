@@ -30,14 +30,13 @@ HottMasterEditor::HottMasterEditor(HottMasterProcessor& p)
 {
     setLookAndFeel(&lnf);
 
-    sections = {
-        {"RESONANCE",  kAccSoothe, {{"soothe_depth","DEPTH"}, {"soothe_speed","SPEED"}, {"soothe_select","SELECT"}}, {}, {}},
-        {"LINEAR EQ",  kAccEQ,     {{"eq_low","LOW"}, {"eq_lowmid","LO-MID"}, {"eq_highmid","HI-MID"}, {"eq_high","HIGH"}}, {}, {}},
-        {"BUS COMP",   kAccComp,   {{"comp_thresh","THRESH"}, {"comp_ratio","RATIO"}, {"comp_attack","ATK"}, {"comp_release","REL"}, {"comp_makeup","GAIN"}}, {}, {}},
-        {"SOFT CLIP",  kAccClip,   {{"clip_ceiling","CEIL"}, {"clip_drive","DRIVE"}}, {}, {}},
-        {"LIMITER",    kAccLim,    {{"lim_ceiling","CEIL"}, {"lim_release","REL"}}, {}, {}},
-        {"OUTPUT",     kAccOut,    {{"output_gain","GAIN"}}, {}, {}}
-    };
+    sections.resize(6);
+    sections[0] = {"RESONANCE",  kAccSoothe, {{"soothe_depth","DEPTH"}, {"soothe_speed","SPEED"}, {"soothe_select","SELECT"}}, {}, {}};
+    sections[1] = {"LINEAR EQ",  kAccEQ,     {{"eq_low","LOW"}, {"eq_lowmid","LO-MID"}, {"eq_highmid","HI-MID"}, {"eq_high","HIGH"}}, {}, {}};
+    sections[2] = {"BUS COMP",   kAccComp,   {{"comp_thresh","THRESH"}, {"comp_ratio","RATIO"}, {"comp_attack","ATK"}, {"comp_release","REL"}, {"comp_makeup","GAIN"}}, {}, {}};
+    sections[3] = {"SOFT CLIP",  kAccClip,   {{"clip_ceiling","CEIL"}, {"clip_drive","DRIVE"}}, {}, {}};
+    sections[4] = {"LIMITER",    kAccLim,    {{"lim_ceiling","CEIL"}, {"lim_release","REL"}}, {}, {}};
+    sections[5] = {"OUTPUT",     kAccOut,    {{"output_gain","GAIN"}}, {}, {}};
 
     for (auto& sec : sections)
     {
